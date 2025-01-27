@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/SelfProject/flappy_bird/windows/flutter"
+    "cmake.sourceDirectory": "C:/SelfProject/flappy_bird/windows/flutter",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
