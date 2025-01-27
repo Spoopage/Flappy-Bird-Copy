@@ -4,6 +4,7 @@ import 'package:flappy_bird/obstacle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'bird.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -80,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     return false;
   }
 
-  void scoreBoard() {
+void scoreBoard() {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -97,9 +98,14 @@ class _HomePageState extends State<HomePage> {
         actions: [
           TextButton(
             onPressed: () {
+              // Update highscore if current score is higher
               if (score > highscore) {
-                highscore = score;
+                setState(() {
+                  highscore = score;
+                });
+                saveHighScore(); // Save the new highscore to persistent storage
               }
+
               resetGame(); // Reset game variables
               Navigator.of(context).pop(); // Close the dialog
             },
@@ -113,6 +119,8 @@ class _HomePageState extends State<HomePage> {
     },
   );
 }
+
+
 
 void updateScore() {
   if (barrierX1 < -0.2 && barrierX1 > -0.25) {
@@ -128,6 +136,24 @@ void updateScore() {
       score++;
     });
   }
+}
+
+@override
+void initState() {
+  super.initState();
+  loadHighScore(); // Load the saved highscore when the app starts
+}
+
+void saveHighScore() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setDouble('highscore', highscore);
+}
+
+void loadHighScore() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  setState(() {
+    highscore = prefs.getDouble('highscore') ?? 0; // Default to 0 if no value exists
+  });
 }
 
 
